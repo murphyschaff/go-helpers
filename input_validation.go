@@ -62,9 +62,10 @@ Prompts the user to given an integer value
 Can limit range by adding min or max (geq or leq)
 Args: min, max
 */
-func GetInt(rng ...int) int {
+func GetInt(message string, rng ...int) int {
 	scanner := bufio.NewScanner(os.Stdin)
 	for {
+		fmt.Printf("Please enter a integer value for %s\n", message)
 		scanner.Scan()
 		input := scanner.Text()
 		val, err := strconv.Atoi(input)
