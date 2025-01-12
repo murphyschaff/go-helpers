@@ -4,13 +4,15 @@ import (
 	"bufio"
 	"fmt"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 )
 
 // validates a given value for option
 // option_to_validate: human-readable value shown to the user to prompt for validation
-func CorrectStringValidate(option_to_validate string) string {
+// regex: regex string objects that can be used to match strings (optional)
+func CorrectStringValidate(option_to_validate string, regex ...*regexp.Regexp) string {
 	validate := true
 	scanner := bufio.NewScanner(os.Stdin)
 	var input string
@@ -18,6 +20,29 @@ func CorrectStringValidate(option_to_validate string) string {
 	scanner.Scan()
 	choice = scanner.Text()
 	for validate {
+		//regular expression is used to match this string
+		if len(regex) != 0 {
+			checkPass := true
+			for checkPass {
+				pass := true
+				for _, val := range regex {
+					//makes sure each regex string matches
+					match := val.MatchString(choice)
+					if !match {
+						pass = false
+					}
+				}
+				//if they pass, move for validation
+				if pass {
+					checkPass = false
+				} else {
+					fmt.Printf("You have entered a string that does not match a regular expression for %s. Please try again\n", option_to_validate)
+					scanner.Scan()
+					choice = scanner.Text()
+				}
+			}
+		}
+
 		fmt.Printf("Are you sure you want '%s' for '%s'\n[Y]Yes, [N]No: ", choice, option_to_validate)
 		scanner.Scan()
 		input = scanner.Text()
