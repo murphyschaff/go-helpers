@@ -83,7 +83,10 @@ func GetInt(message string, rng ...int) int {
 					fmt.Printf("Please enter a value that is greater than %d and less than %d\n", rng[0], rng[1])
 				}
 			} else {
-				return val
+				confirm := fmt.Sprintf("Are you sure you would like %d for %s", val, message)
+				if YesNo(confirm) {
+					return val
+				}
 			}
 		} else {
 			fmt.Printf("Please enter an integer value less than %d", rng)
