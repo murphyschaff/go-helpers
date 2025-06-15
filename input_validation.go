@@ -9,6 +9,8 @@ import (
 	"strings"
 )
 
+const filePathRegex = `^([a-zA-Z]:\\|\\\\[^\\\/:*?"<>|]+\\[^\\\/:*?"<>|]+\\?|/)([^\\\/:*?"<>|]+[\\\/]?)*$`
+
 // validates a given value for option
 // option_to_validate: human-readable value shown to the user to prompt for validation
 // regex: regex string objects that can be used to match strings (optional)
@@ -116,5 +118,19 @@ func GetInt(message string, rng ...int) int {
 		} else {
 			fmt.Printf("Please enter an integer value less than %d", rng)
 		}
+	}
+}
+
+// ValidateFilepath validates that a given filepath is a valid Windows or Linux filepath
+func ValidateFilepath(filepath string) bool {
+	re, _ := regexp.Compile(filePathRegex)
+	if re.MatchString(filepath) {
+		if _, err := os.Stat(filepath); err != nil {
+			return false
+		} else {
+			return true
+		}
+	} else {
+		return false
 	}
 }
