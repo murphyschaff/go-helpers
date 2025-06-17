@@ -7,7 +7,7 @@ import (
 )
 
 // SaveToJSON a given data structure object to file at location. Validates filepath given
-func SaveToJSON(filepath string, data *any) error {
+func SaveToJSON[T any](data []T, filepath string) error {
 
 	if !ValidateFilepath(filepath) {
 		return &StringError{filepath, FilepathError}
@@ -26,20 +26,21 @@ func SaveToJSON(filepath string, data *any) error {
 	return nil
 }
 
-// LoadFromJSON loads data from a JSON file into a struct
-func LoadFromJSON(filepath string, data ...*any) error {
+// LoadFromJSON loads data from a JSON f0]\ile into a struct
+func LoadFromJSON[T any](filepath string) ([]T, error) {
 	if !ValidateFilepath(filepath) {
-		return &StringError{filepath, FilepathError}
+		return nil, &StringError{filepath, FilepathError}
 	}
 	fileData, err := os.ReadFile(filepath)
 	if err != nil {
-		return fmt.Errorf("Unable to read file: %s", err)
+		return nil, fmt.Errorf("unable to read file: %s", err)
 	}
 
-	err = json.Unmarshal(fileData, data)
+	var data []T
+	err = json.Unmarshal(fileData, &data)
 	if err != nil {
-		return fmt.Errorf("Unable to unmarshal data: %s", err)
+		return nil, fmt.Errorf("unable to unmarshal data: %s", err)
 	}
 
-	return nil
+	return data, nil
 }
